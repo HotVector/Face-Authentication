@@ -3,9 +3,9 @@ import time
 import cv2
 import utils
 from align_faces import FaceAligner
-import pygame
+from predict import FacePredict
 
-net = cv2.dnn.readNetFromCaffe("deploy.prototxt", "resnet10SSD.caffemodel")
+net = cv2.dnn.readNetFromCaffe("deploy.prototxt.txt", "resnet10.caffemodel")
 print("Model Loaded!")
 
 cap = cv2.VideoCapture(0)
@@ -13,9 +13,7 @@ time.sleep(2.0)
 print("Starting...")
 
 faceAligner = FaceAligner("dlibModel.dat", 384)
-pygame.init()
-pygame.display.set_caption("OpenCV camera stream on Pygame")
-screen = pygame.display.set_mode([1920,1080], pygame.FULLSCREEN)
+
 
 # loop over the frames from the video stream
 while True:
@@ -33,9 +31,7 @@ while True:
     net.setInput(blob)
     detections = net.forward()
     faces = []
-
-    screen.fill([0,0,0])
-
+    
     # loop over the detections
     for i in range(0, detections.shape[2]):
         # extract the confidence (i.e., probability) associated with the
@@ -54,29 +50,14 @@ while True:
             #faces.append(faceAligner.alignFace((startX, startY, endX, endY), frame))
             #Without Alignment
             faces.append(cv2.resize(frame[startY:endY, startX:endX], (384, 384)))
+            cv2.rectangle(frame, (startX, startY), (endX, endY), (0, 0, 255), 1)
         except:
             pass
 
-    # show the output frame
-
-    for i in range(10):
-        try:
-            wow = faces[i]
-            wow = np.rot90(wow)
-            wow = cv2.cvtColor(wow, cv2.COLOR_BGR2RGB)
-            wow = pygame.surfarray.make_surface(wow)
-            if(i < 5):
-                screen.blit(wow, (384*i, 0))
-            else:
-                screen.blit(wow, (384*(i-5), 384))
-                print("WOW")
-            #cv2.imshow("face" + str(i), faces[i])
-        except:
-            pass
-            #cv2.destroyWindow("face" + str(i))
-
+    facePredict = FacePredict()
+    facePredict.faceCompare(faces)
+    
     cv2.imshow("Frame", frame)
-    pygame.display.update()
     key = cv2.waitKey(1) & 0xFF
  
     # if the `q` key was pressed, break from the loop

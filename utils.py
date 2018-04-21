@@ -1,3 +1,7 @@
+import os
+import cv2
+import numpy as np
+
 def turnEven(num):
     if num % 2 == 0:
         return (num, False)
@@ -42,3 +46,11 @@ def shape_to_np(shape, dtype="int"):
 
 	# return the list of (x, y)-coordinates
 	return coords
+
+
+def loadData(img_dir):
+    return np.array([cv2.cvtColor(cv2.imread(os.path.join(img_dir, img)), cv2.COLOR_BGR2RGB) for img in os.listdir(img_dir) if img.endswith(".jpg")])
+
+def conv_num_to_one_hot(num, numClasses):
+    one_hot_vector = [0 for i in range(0, numClasses)]
+    one_hot_vector[num] = 1
