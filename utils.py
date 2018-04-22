@@ -54,3 +54,4 @@ def loadData(img_dir):
 def conv_num_to_one_hot(num, numClasses):
     one_hot_vector = [0 for i in range(0, numClasses)]
     one_hot_vector[num] = 1
+    return one_hot_vector
