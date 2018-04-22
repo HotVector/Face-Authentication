@@ -58,6 +58,6 @@ datagen = ImageDataGenerator(
 datagen.fit(X)
 
 print("Starting Training")
-model.fit_generator(datagen.flow(X, y, batch_size=32), steps_per_epoch=len(X)/32, epochs=20, callbacks=[tfBoard])
+model.fit_generator(datagen.flow(X, y, batch_size=3), steps_per_epoch=len(X)/3, epochs=20, callbacks=[tfBoard])
 print("Saving Model")
 model.save("model.h5")
